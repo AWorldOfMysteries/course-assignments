@@ -1,3 +1,5 @@
+// DONE
+
 /**
   You need to create an express HTTP server in Node.js which will handle the logic of a todo list app.
   - Don't use any database, just store all the data in an array to store the todo list data (in-memory)
@@ -43,7 +45,115 @@
   const bodyParser = require('body-parser');
   
   const app = express();
+
+  todoList = []; // id: title: description: 
   
   app.use(bodyParser.json());
+  // app.use(express.json());
+ 
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
   
-  module.exports = app;
+  app.get("/todos", (req, res) => {
+    res.status(200).json(todoList);
+  });
+
+  app.get("/todos/:id1", (req, res) => {
+    let todoId = parseInt(req.params.id1, 10);
+    let found = false;
+    let index;
+    for(let i=0; i<todoList.length; i++){
+      if(todoList[i].id == todoId){
+        found = true;
+        index = i;
+        break;
+      }
+    }
+    if(found){
+      res.status(200).json(todoList[index]);
+    }
+    else
+      res.status(404).json({});
+  });
+
+  app.post("/todos", (req, res) => {
+    const todoBody = req.body;
+    const newId = todoList.length + 1;
+
+    // console.log("Received Body:" + JSON.stringify(todoBody));
+    const newTodo = {
+      id: newId,
+      title: todoBody.title || "",
+      completed: todoBody.completed || false,
+      description: todoBody.description || ""
+    }
+
+    todoList.push(newTodo);
+
+    res.status(201).json({
+      id: newId
+      // todoBody.title
+    });
+
+  });
+  
+  app.put("/todos/:id", (req, res) => {
+    const todoId = parseInt(req.params.id, 10);
+    let found = false;
+    let index;
+    
+    for(let i=0; i<todoList.length; i++){
+      if(todoList[i].id == todoId){
+        found = true;
+        index = i;
+        break;
+      }
+    }
+
+    if(found){
+      const body = req.body;
+      const updatedTodo = {
+        id: todoList[index].id,
+        title: body.title ? body.title : todoList[index].title,
+        completed: body.completed ? body.completed : todoList[index].completed,
+        description: body.description ? body.description : todoList[index].description
+      };
+      todoList[index] = updatedTodo;
+      res.status(200).json({});
+
+    }
+    else{
+      res.status(404).json({});
+    }
+  });
+
+  app.delete("/todos/:id", (req, res) => {
+    const todoId = parseInt(req.params.id, 10);
+    let found = false;
+    let index;
+    
+    for(let i=0; i<todoList.length; i++){
+      if(todoList[i].id == todoId){
+        found = true;
+        index = i;
+        break;
+      }
+    }
+
+    if(found){
+        todoList.splice(index, 1);
+        res.status(200).json({});
+    }
+    else{
+      res.status(404).json({});
+    }
+  });
+
+  app.listen(3000);
+
+  app.use((req, res) => {
+    res.status(404).json({});
+  });
+
+  // module.exports = app;
