@@ -1,0 +1,99 @@
+<!-- Done -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <script>
+        // parent div
+            // child div
+            // container -> append new div every time
+
+        let globalId = 1;
+
+        function markAsDone(id){
+            const outerDiv = document.getElementById(id);
+            outerDiv.childNodes[2].innerHTML = "Done!"
+        }
+
+        function createChild(title, description, id){
+            const outerDiv = document.createElement("div");
+            const innerDiv1 = document.createElement("div");
+            const innerDiv2 = document.createElement("div");
+            innerDiv1.innerHTML = title;
+            innerDiv2.innerHTML = description;
+
+            outerDiv.appendChild(innerDiv1);
+            outerDiv.appendChild(innerDiv2);
+
+            const btn = document.createElement("button");
+            btn.innerHTML = `Mark as done`;
+            btn.setAttribute("onclick", `markAsDone(${id})`);
+            outerDiv.appendChild(btn);
+
+            outerDiv.setAttribute("id", id);
+            return outerDiv;
+        }
+
+        // function addTodo(){
+        //     const title = document.getElementById("title").value;
+        //     const description = document.getElementById("description").value;
+        //     const parent = document.getElementsByClassName("container")[0];
+
+        //     parent.appendChild(createChild(title, description, globalId++));
+
+        //     // let originalHtml = document.getElementsByClassName("container")[0].innerHTML;
+        //     // const outerDiv = document.createElement("div");
+        //     // const innerDiv1 = document.createElement("div");
+        //     // const innerDiv2 = document.createElement("div");
+        //     // innerDiv1.value = title;
+        //     // innerDiv2.value = description;
+
+        //     // let newHtml = originalHtml + `
+        //     //     <div>
+        //     //         <div>${title}</div>
+        //     //         <div>${description}</div>
+        //     //         <button>Mark as done</button>
+        //     //     </div>
+        //     // `
+        //     // document.getElementsByClassName("container")[0].innerHTML = newHtml;
+        // }
+
+        function updateTodoAccToState(state){
+            const parent = document.getElementsByClassName("container")[0];
+            parent.innerHTML = "";
+            for(let i=0; i<state.length; i++){
+                const child = createChild(state[i].title, state[i].description, state[i].id);
+                parent.appendChild(child);
+            }
+        }
+    </script>
+</head>
+<body id="body">
+    <input type="text" placeholder="title" id="title"><br><br>
+    <input type="text" placeholder="description" id="description"><br><br>
+    <button onclick="updateTodoAccToState([
+        {
+            id: 1,
+            title: 'Go to gym',
+            description: 'workout bro'
+        },
+        {
+            id: 2,
+            title: 'Go to gym again',
+            description: 'workout again bro'
+        },
+        {
+            id: 23,
+            title: 'Go to gym again',
+            description: 'workout again bro'
+        }
+    ])">Add Todo</button>
+
+    <div class="container">
+
+    </div>
+</body>
+</html>

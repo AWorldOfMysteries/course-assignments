@@ -1,11 +1,34 @@
-<!DOCTYPE html>
-<html>
+// const oldTodoState = [{"title":"h1","description":"t1","id":1}];
+// const newTodos = [{"title":"h1","description":"t1","id":1},{"title":"h2","description":"t2","id":2}];
 
-<head>
-  <script>
-    let globalId = 1;
+// const added = newTodos.filter((item) => {
+//     // if(oldTodoState.includes(item))
+//     //   return false;
+    
+//     // for(let i=0; i<oldTodoState.length; i++){
+//     //   if(oldTodoState[i].id == item.id)
+//     //     return false;
+//     // }
+
+//     // return true;
+
+//   // 1, 2, 3, 4 old
+//   // 2*, 1, 5, 6 new
+
+//     return !oldTodoState.some(oldTodoItem => oldTodoItem.id === item.id);
+
+//   });
+
+//   console.log(`newTodo is ${JSON.stringify(newTodos)}`);
+//   console.log(`Added array is ${JSON.stringify(added)}`);
+//   console.log(`Old State is ${JSON.stringify(oldTodoState)}`);
+
+
+// -----------------------------------------------
+
+let globalId = 1;
     let todoState = [];
-    let oldTodoState = [];
+    let oldTodoState = [{"title":"h1","description":"t1","id":1},{"title":"h2","description":"t2","id":2}]
 
     function addTodoToDom(todo) {
       const title = todo.title;
@@ -27,15 +50,12 @@
     function removeTodoFromDom(todo) {
       let todoItem = document.getElementById(todo.id);
       todoItem.remove();
-      console.log("removedFromDom")
     }
 
-    function updateTodoInDom(newTodo) {
-        let todoItem = document.getElementById(newTodo.id);
+    function updateTodoInDom(oldTodo, newTodo) {
+        let todoItem = document.getElementById(oldTodo.id);
         todoItem.childNodes[0].innerHTML = newTodo.title;
         todoItem.childNodes[1].innerHTML = newTodo.description; 
-        console.log("updatedInDom");
-        console.log(newTodo.description);
     }
 
     function updateState(newTodos) {
@@ -68,23 +88,17 @@
       // console.log(`Old State is ${JSON.stringify(oldTodoState)}`);
 
       const deleted = oldTodoState.filter((item) => {
-        if(newTodos.id === item.id && newTodos.title === item.title && newTodos.description === item.description)
+        if(newTodos.includes(item))
           return false;
-        else{
-          for(let i=0; i<newTodos.length; i++){
-            if(newTodos[i].id === item.id){
-              updated.push(newTodos[i]);
-              return false;
-            }
+        for(let i=0; i<newTodos.length; i++){
+          if(newTodos[i].id == item.id){
+            updated.push(item);
+            return false;
           }
-          // some bug here
-          // exactly same todos are also getting pushed in updated array
         }
         
         return true;
       });
-      console.log(`Deleted array is ${JSON.stringify(deleted)}`);
-      console.log(`Updated array is ${JSON.stringify(updated)}`);
       // calculate these 3 arrays
       
       // 1, 2, 3, 4 old
@@ -109,34 +123,10 @@
     function addTodo() {
       const title = document.getElementById("title").value;
       const description = document.getElementById("description").value;
-      const id = document.getElementById("_id").value;
       todoState.push({
         title: title,
         description: description,
-        id: id
-      });
-      console.log(todoState);
-      // updateState(todoState);
-    }
-
-    function updateDOM(){
+        id: globalId++,
+      })
       updateState(todoState);
-      todoState = [];
     }
-  </script>
-</head>
-
-<body>
-  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
-  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
-  <input type="text" id="_id" placeholder="Id"><br><br>
-  <button onclick="addTodo()">Add todo</button>
-  <br /> <br />
-  <button onclick="updateDOM()">Update DOM</button>
-  <br><br>
-  <div id="todos">
-
-  </div>
-</body>
-
-</html>
